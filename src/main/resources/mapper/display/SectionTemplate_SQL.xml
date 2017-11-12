@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="sectionTemplate">
+
+     
+    <select id="selectSectionTemplateListCount" parameterType="DispSectTmplDto" resultType="int">
+      		
+			SELECT COUNT(1)
+			  FROM DISP_SECT_TMPL
+			 WHERE 1=1
+			   <if test="sectTmplNo != null and sectTmplNo != ''">
+			   AND SECT_TMPL_NO = #{sectTmplNo}
+			   </if>
+			   <if test="sectTmplNm != null and sectTmplNm != ''">
+			   AND SECT_TMPL_NM LIKE CONCAT('%', #{sectTmplNm}, '%')
+			   </if>
+			   <if test="useYn != null and useYn != ''">
+			   AND USE_YN = #{useYn}
+			   </if>
+			   <if test="sectTmplTpCd != null and sectTmplTpCd != ''">
+			   AND SECT_TMPL_TP_CD = #{sectTmplTpCd}
+			   </if>
+
+    </select>
+    
+    
+    <select id="selectSectionTemplateList" parameterType="DispSectTmplDto" resultType="DispSectTmplDto">
+      		
+			SELECT DST.SECT_TMPL_NO
+				 , DT.TMPL_NO
+				 , DT.TMPL_NM
+				 , DST.SECT_TMPL_NM
+				 , DST.SECT_TMPL_TP_CD
+				 , CONCAT(DST.SECT_TMPL_FILE_PATH_NM, DST.SECT_TMPL_FILE_NM) AS SECT_TMPL_FILE
+				 , DST.USE_YN
+				 , DST.SYS_REG_USR_NO AS SYS_REG_USR_NM
+				 , DST.SYS_REG_DT
+				 , DST.SYS_MOD_USR_NO AS SYS_MOD_USR_NM
+				 , DST.SYS_MOD_DT
+			  FROM DISP_SECT_TMPL DST
+			     , DISP_TMPL DT
+			 WHERE DST.TMPL_NO = DT.TMPL_NO
+			   <if test="sectTmplNo != null and sectTmplNo != ''">
+			   AND DST.SECT_TMPL_NO = #{sectTmplNo}
+			   </if>
+			   <if test="sectTmplNm != null and sectTmplNm != ''">
+			   AND DST.SECT_TMPL_NM LIKE CONCAT('%', #{sectTmplNm}, '%')
+			   </if>
+			   <if test="useYn != null and useYn != ''">
+			   AND DST.USE_YN = #{useYn}
+			   </if>
+			   <if test="sectTmplTpCd != null and sectTmplTpCd != ''">
+			   AND DST.SECT_TMPL_TP_CD = #{sectTmplTpCd}
+			   </if>
+			   
+			   LIMIT #{pagingDto.strIdx}, #{pagingDto.endIdx}
+			  
+    </select>
+    
+    
+    
+     
+</mapper>

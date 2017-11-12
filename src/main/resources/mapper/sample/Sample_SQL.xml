@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="sample">
+
+     <select id="selectBoardList" parameterType="hashmap" resultType="hashmap">
+        <![CDATA[
+       	SELECT 
+			SEQ
+			, TEST_ID 
+			,TEST_NM 
+		FROM TEST_CRUD
+        ]]>
+    </select>
+
+     <select id="selectDispTemplate" parameterType="String" resultType="hashmap">
+        <![CDATA[
+       	SELECT 	TMPL_FILE_PATH,
+				TMPL_FILE_NM
+		FROM 	DP_TMPL
+		WHERE	TMPL_NO = 100001
+        ]]>
+    </select>
+    
+    
+     <select id="selectTemplateNo" parameterType="String" resultType="String">
+        <![CDATA[
+		SELECT	TMPL_NO
+		FROM	DP_DISP_SHOP
+		WHERE	DISP_SHOP_NO = #{dispShopNo}	
+        ]]>
+    </select>
+    
+    
+    <select id="selectTemplateFile" parameterType="String" resultType="String">
+        <![CDATA[
+        
+		    SELECT	CONCAT(TMPL.TMPL_FILE_PATH, TMPL.TMPL_FILE_NM) AS TEMPLATE_FILE
+		      FROM	DISP_SHOP SHOP 
+		INNER JOIN	DISP_TMPL TMPL	
+		        ON	SHOP.TMPL_NO = TMPL.TMPL_NO
+		     WHERE	SHOP.DISP_SHOP_NO = #{dispShopNo}
+        
+        ]]>
+    </select>
+    
+    
+    <select id="selectConerTemplateGroupList" parameterType="String" resultType="DisplayConerTemplateDto">
+        <![CDATA[
+        
+		SELECT	GRP.CONR_TMPL_GRP_NO
+				,GRP.CONR_TMPL_GRP_NM
+				,GRP.CONR_TMPL_GRP_BG_IMG_PATH
+				,GRP.CONR_TMPL_GRP_BG_IMG_FILE_NM
+				,GRP.CONR_TMPL_GRP_BG_RGB_CD
+				,GRP.CONR_TMPL_GRP_TP_CD
+				,CONCAT(GRP.CONR_TMPL_GRP_FILE_PATH, GRP.CONR_TMPL_GRP_FILE_NM) AS CONR_TMPL_GRP_FILE
+		FROM	DP_DISP_CONR AS CONR
+				INNER JOIN DP_CONR_TMPL_GRP AS GRP
+				ON CONR.CONR_TMPL_GRP_NO = GRP.CONR_TMPL_GRP_NO
+		WHERE	CONR.DISP_SHOP_NO = 500001
+		AND		GRP.USE_YN = 'Y'
+        
+        ]]>
+    </select>
+	
+	
+	<select id="selectSectionList" parameterType="String" resultType="DispSectDto">
+        <![CDATA[
+        
+		    SELECT SECT.SECT_NO
+		         , SECT.SECT_TMPL_NO
+		         , CONCAT(TMPL.SECT_TMPL_FILE_PATH, TMPL.SECT_TMPL_FILE_NM) AS SECT_TMPL_FILE
+		         , SECT.SECT_NM
+		         , SECT.DISP_YN
+		         , SECT.SECT_BG_IMG_FILE_PATH
+		         , SECT.SECT_BG_IMG_FILE_NM
+		         , SECT.SECT_BG_RGB_CD
+		         , SECT.SECT_HIDDEN_YN
+		         , SECT.SECT_DESC
+		      FROM DISP_SECT SECT 
+		INNER JOIN DISP_SECT_TMPL TMPL	
+		        ON SECT.SECT_TMPL_NO = TMPL.SECT_TMPL_NO
+		     WHERE SECT.DISP_SHOP_NO = #{dispShopNo}	
+        
+        ]]>
+    </select>
+	
+	<select id="selectConrList" parameterType="String" resultType="DispConrDto">
+        <![CDATA[
+        
+		    SELECT CONR.CONR_NO
+		         , CONR.CONR_TMPL_NO
+		         , CONR.CONR_NM
+		         , CONR.DISP_YN
+		         , CONR.CONR_BG_IMG_FILE_PATH
+		         , CONR.CONR_BG_IMG_FILE_NM
+		         , CONR.CONR_BG_RGB_CD
+		         , CONR.CONR_HIDDEN_YN
+		         , CONR.CONR_DESC
+		      FROM DISP_CONR CONR 
+		     WHERE CONR.SECT_NO = #{sectNo}
+
+        
+        ]]>
+    </select>
+    
+    
+    <select id="selectConrContsList" parameterType="String" resultType="DispConrContsDto">
+        <![CDATA[
+        
+		    SELECT CONTS.CONR_CONTS_NO
+		         , CONTS.CONR_TMPL_TRGT_NO
+		         , CONTS.CONTS_NM
+		         , CONTS.CONTS_DESC
+		         , CONTS.CONTS_IMG_FILE_PATH
+		         , CONTS.CONTS_IMG_FILE_NM
+		         , CONTS.CONTS_TXT
+		         , CONTS.CONTS_URL_LINK
+		         , CONTS.CONTS_OPEN_TP_CD
+		         , CONTS.CONTS_DISP_YN
+		         
+		      FROM DISP_CONR_CONTS CONTS 
+		     WHERE CONTS.CONR_NO = #{conrNo}
+
+        
+        ]]>
+    </select>
+	
+     
+</mapper>

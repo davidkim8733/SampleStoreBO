@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="displayTemplate">
+
+     
+    <select id="selectDispTmplListCount" parameterType="DispTmplDto" resultType="int">
+      		
+			SELECT COUNT(1)
+			  FROM DISP_TMPL
+			 WHERE 1=1
+			   <if test="tmplNo != null and tmplNo != ''">
+			   AND TMPL_NO = #{tmplNo}
+			   </if>
+			   <if test="tmplNm != null and tmplNm != ''">
+			   AND TMPL_NM LIKE CONCAT('%', #{tmplNm}, '%')
+			   </if>
+			   <if test="useYn != null and useYn != ''">
+			   AND USE_YN = #{useYn}
+			   </if>
+			   <if test="tmplTpCd != null and tmplTpCd != ''">
+			   AND TMPL_TP_CD = #{tmplTpCd}
+			   </if>
+
+    </select>
+    
+    
+    <select id="selectDispTmplList" parameterType="DispTmplDto" resultType="DispTmplDto">
+      		
+			SELECT TMPL_NO
+				 , TMPL_NM
+				 , TMPL_TP_CD
+				 , CONCAT(TMPL_FILE_PATH_NM, TMPL_FILE_NM) AS TMPL_FILE
+				 , USE_YN
+				 , SYS_REG_USR_NO AS SYS_REG_USR_NM
+				 , SYS_REG_DT
+				 , SYS_MOD_USR_NO AS SYS_MOD_USR_NM
+				 , SYS_MOD_DT
+			  FROM DISP_TMPL
+			 WHERE 1=1
+			   <if test="tmplNo != null and tmplNo != ''">
+			   AND TMPL_NO = #{tmplNo}
+			   </if>
+			   <if test="tmplNm != null and tmplNm != ''">
+			   AND TMPL_NM LIKE CONCAT('%', #{tmplNm}, '%')
+			   </if>
+			   <if test="useYn != null and useYn != ''">
+			   AND USE_YN = #{useYn}
+			   </if>
+			   <if test="tmplTpCd != null and tmplTpCd != ''">
+			   AND TMPL_TP_CD = #{tmplTpCd}
+			   </if>
+			   
+			  LIMIT #{pagingDto.strIdx}, #{pagingDto.endIdx}
+			  
+    </select>
+    
+    
+    
+    
+    <insert id="mergeTemplageInfo" parameterType="DispTmplDto" useGeneratedKeys="false">
+      		
+		INSERT INTO DISP_TMPL (	
+			   TMPL_NO	
+			 , TMPL_NM
+			 , TMPL_TP_CD
+			 , TMPL_FILE_PATH_NM
+			 , TMPL_FILE_NM
+			 , USE_YN
+			 , SYS_REG_USR_NO
+			 , SYS_REG_DT
+			 , SYS_MOD_USR_NO
+			 , SYS_MOD_DT 
+		) VALUES ( 
+			   #{tmplNo}
+			 , #{tmplNm}
+		  	 , #{tmplTpCd}
+		  	 , #{tmplFilePathNm}
+		  	 , #{tmplFileNm}
+		  	 , #{useYn}
+		  	 , '1001'
+		  	 , now()
+		  	 , '1001'
+		  	 , now()
+		 )
+		 ON DUPLICATE KEY
+		 UPDATE TMPL_NM				= #{tmplNm}
+		  	  , TMPL_TP_CD			= #{tmplTpCd}
+		  	  , TMPL_FILE_PATH_NM 	= #{tmplFilePathNm}
+		  	  , TMPL_FILE_NM		= #{tmplFileNm}
+		  	  , USE_YN				= #{useYn}
+		  	  , SYS_MOD_USR_NO		= '1001'
+		  	  , SYS_MOD_DT			= NOW()   	
+
+    </insert>
+		
+	
+	<update id="updateTemplateInfo" parameterType="DispTmplDto">
+		
+		 UPDATE	DISP_TMPL
+		 	SET	TMPL_NM				= #{tmplNm}
+		  	  , TMPL_TP_CD			= #{tmplTpCd}
+		  	  , TMPL_FILE_PATH_NM 	= #{tmplFilePathNm}
+		  	  , TMPL_FILE_NM		= #{tmplFileNm}
+		  	  , USE_YN				= #{useYn}
+		  	  , SYS_MOD_USR_NO		= '1001'
+		  	  , SYS_MOD_DT			= NOW()   	
+		  WHERE	TMPL_NO				= #{tmplNo}
+	
+	</update> 
+	
+	
+	<insert id="insertTemplateInfo" parameterType="DispTmplDto">
+      		
+		INSERT INTO DISP_TMPL (	
+			   TMPL_NM
+			 , TMPL_TP_CD
+			 , TMPL_FILE_PATH_NM
+			 , TMPL_FILE_NM
+			 , USE_YN
+			 , SYS_REG_USR_NO
+			 , SYS_REG_DT
+			 , SYS_MOD_USR_NO
+			 , SYS_MOD_DT 
+		) VALUES ( 
+			   #{tmplNm}
+		  	 , #{tmplTpCd}
+		  	 , #{tmplFilePathNm}
+		  	 , #{tmplFileNm}
+		  	 , #{useYn}
+		  	 , '1001'
+		  	 , now()
+		  	 , '1001'
+		  	 , now()
+		 )
+		
+    </insert>
+	
+	
+	
+	<delete id="deleteDispTmpl" parameterType="Map">
+		
+		DELETE FROM DISP_TMPL
+		 WHERE TMPL_NO IN	
+		<foreach collection="array" item="item" index="index" separator="," open="(" close=")">
+		    ${array[index]}
+		</foreach>
+		
+	</delete>
+
+	<select id="selectTmplateDetailInfo" parameterType="String" resultType="DispTmplDto">
+      		
+			SELECT TMPL_NO
+				 , TMPL_NM
+				 , TMPL_FILE_PATH_NM
+				 , TMPL_FILE_NM
+				 , TMPL_TP_CD
+				 , USE_YN
+				 , SYS_REG_USR_NO AS SYS_REG_USR_NM
+				 , SYS_REG_DT
+				 , SYS_MOD_USR_NO AS SYS_MOD_USR_NM
+				 , SYS_MOD_DT
+			  FROM DISP_TMPL
+			 WHERE 1=1
+			   AND TMPL_NO = #{paramTmplNo}
+			  
+    </select>
+
+     
+</mapper>
